@@ -1,64 +1,71 @@
 package com.bienestar.backend;
 
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Service
 public class ClienteService {
 
-    private final ClienteRepository repository = new ClienteRepository();
+    private final ClienteRepository repository;
 
-    // Expresión regular para email válido
+    public ClienteService(ClienteRepository repository) {
+        this.repository = repository;
+    }
+
     private static final Pattern EMAIL_REGEX =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
-    // Validación de contraseña (min 8 caracteres, al menos 1 letra y 1 número)
     private static final Pattern PASSWORD_REGEX =
             Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
 
     public String registrarCliente(Cliente cliente) {
         if (cliente.getNombreCompleto() == null || cliente.getNombreCompleto().isEmpty()) {
-            return "Nombre es obligatorio.";
+            return "❌ Nombre es obligatorio.";
         }
         if (cliente.getDpi() == null || cliente.getDpi().length() < 8) {
-            return "DPI debe tener al menos 8 dígitos.";
+            return "❌ DNI debe tener al menos 8 dígitos.";
         }
         if (repository.existsByDni(cliente.getDpi())) {
-            return "DPI ya registrado.";
+            return "⚠️ DNI ya registrado.";
         }
         if (cliente.getEmail() == null || !EMAIL_REGEX.matcher(cliente.getEmail()).matches()) {
-            return "Email inválido.";
+            return "❌ Email inválido.";
         }
         if (repository.existsByEmail(cliente.getEmail())) {
-            return "Email ya registrado.";
+            return "⚠️ Email ya registrado.";
         }
         if (cliente.getPassword() == null || !PASSWORD_REGEX.matcher(cliente.getPassword()).matches()) {
-            return "La contraseña debe tener al menos 8 caracteres, incluir letra y número.";
+            return "❌ La contraseña debe tener al menos 8 caracteres, incluir letra y número.";
         }
 
-        boolean guardado = repository.save(cliente);
-        return guardado ? "Cliente registrado con éxito." : "ID duplicado.";
+        repository.save(cliente);
+        return "✅ Cliente registrado con éxito.";
     }
 
     public List<Cliente> listar() {
         return repository.findAll();
     }
 
-    public Cliente buscarPorId(int id) {
-        return repository.findById(id);
+    public Cliente buscarPorId(Integer id) {
+        return repository.findById(id).orElse(null);
     }
 
-    public String actualizar(int id, Cliente cliente) {
-        if (!repository.update(id, cliente)) {
-            return "Cliente no encontrado.";
+    public String actualizar(Integer id, Cliente cliente) {
+        if (!repository.existsById(id)) {
+            return "⚠️ Cliente no encontrado.";
         }
-        return "Cliente actualizado.";
+        cliente.setId(id);
+        repository.save(cliente);
+        return "✅ Cliente actualizado.";
     }
 
-    public String eliminar(int id) {
-        if (!repository.delete(id)) {
-            return "Cliente no encontrado.";
+    public String eliminar(Integer id) {
+        if (!repository.existsById(id)) {
+            return "⚠️ Cliente no encontrado.";
         }
-        return "Cliente eliminado.";
+        repository.deleteById(id);
+        return "✅ Cliente eliminado.";
     }
 }
