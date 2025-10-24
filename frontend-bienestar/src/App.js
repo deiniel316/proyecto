@@ -39,13 +39,13 @@ function App() {
     }
 
     // Datos con los nombres que Java espera
-    const cliente = { 
-      nombreCompleto, 
-      dpi, 
-      email, 
-      password, 
-      telefono, 
-      fechaNacimiento 
+    const cliente = {
+      nombreCompleto,
+      dpi,
+      email,
+      password,
+      telefono,
+      fechaNacimiento,
     };
 
     // Si editId tiene valor => PUT (editar)
@@ -138,22 +138,26 @@ function App() {
           <h2>📋 Lista de Clientes</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {clientes.map((c) => (
-              <li key={c.id} style={{ 
-                padding: "10px", 
-                border: "1px solid #ddd", 
-                marginBottom: "8px",
-                borderRadius: "5px"
-              }}>
-                <strong>{c.nombreCompleto}</strong><br />
+              <li
+                key={c.id}
+                style={{
+                  padding: "10px",
+                  border: "1px solid #ddd",
+                  marginBottom: "8px",
+                  borderRadius: "5px",
+                }}
+              >
+                <strong>{c.nombreCompleto}</strong>
+                <br />
                 DPI: {c.dpi} | Email: {c.email} | Tel: {c.telefono}
                 <div style={{ marginTop: "5px" }}>
-                  <button 
+                  <button
                     onClick={() => editarCliente(c)}
                     style={{ marginRight: "5px" }}
                   >
                     ✏️ Editar
                   </button>
-                  <button 
+                  <button
                     onClick={() => eliminarCliente(c.id)}
                     style={{ backgroundColor: "#ff4444", color: "white" }}
                   >
@@ -167,7 +171,7 @@ function App() {
       )}
 
       <hr />
-      
+
       <h2>{editId ? "✏️ Editar Cliente" : "➕ Registrar Nuevo Cliente"}</h2>
       <form onSubmit={guardarCliente} style={{ display: "grid", gap: "10px" }}>
         <div>
@@ -240,30 +244,30 @@ function App() {
         </div>
 
         <div>
-          <button 
+          <button
             type="submit"
-            style={{ 
-              backgroundColor: "#4CAF50", 
-              color: "white", 
+            style={{
+              backgroundColor: "#4CAF50",
+              color: "white",
               padding: "10px 15px",
               border: "none",
               borderRadius: "4px",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
             {editId ? "💾 Actualizar Cliente" : "✅ Agregar Cliente"}
           </button>
-          
+
           {editId && (
-            <button 
-              type="button" 
-              onClick={resetFormulario} 
-              style={{ 
+            <button
+              type="button"
+              onClick={resetFormulario}
+              style={{
                 marginLeft: "10px",
                 padding: "10px 15px",
                 border: "1px solid #ccc",
                 borderRadius: "4px",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
             >
               ❌ Cancelar
